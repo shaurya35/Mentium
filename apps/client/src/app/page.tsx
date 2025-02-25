@@ -4,9 +4,7 @@ import { FloatingDock } from "@/components/ui/floating-dock";
 import {
   IconBrandGithub,
   IconBrandX,
-  IconExchange,
   IconHome,
-  IconNewSection,
   IconTerminal2,
 } from "@tabler/icons-react";
 import { Spotlight } from "@/components/ui/Spotlight";
@@ -16,7 +14,6 @@ export default function WaitlistPage() {
   const [waitlistCount, setWaitlistCount] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [email, setEmail] = useState("");
-  const placeholders = ["Join waitlist", "Enter your Email"];
 
   const navigationLinks = [
     {
@@ -25,35 +22,23 @@ export default function WaitlistPage() {
       href: "#",
     },
     {
-      title: "Products",
+      title: "Portfolio",
       icon: (
         <IconTerminal2 className="text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "#",
-    },
-    {
-      title: "Components",
-      icon: (
-        <IconNewSection className="text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#",
-    },
-    {
-      title: "Changelog",
-      icon: <IconExchange className="text-neutral-500 dark:text-neutral-300" />,
-      href: "#",
+      href: "https://shauryacodes.me/",
     },
     {
       title: "Twitter",
       icon: <IconBrandX className="text-neutral-500 dark:text-neutral-300" />,
-      href: "#",
+      href: "https://x.com/_shaurya35",
     },
     {
       title: "GitHub",
       icon: (
         <IconBrandGithub className="text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "#",
+      href: "https://github.com/shaurya35/",
     },
   ];
 
@@ -72,7 +57,7 @@ export default function WaitlistPage() {
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email || isSubmitting) return; // Add validation
+    if (!email || isSubmitting) return;
 
     setIsSubmitting(true);
 
@@ -87,7 +72,7 @@ export default function WaitlistPage() {
 
       const { count } = await response.json();
       setWaitlistCount(count);
-      setEmail(""); // Reset email state after successful submission
+      setEmail("");
     } catch (error) {
       console.error("Submission error:", error);
     } finally {
@@ -97,21 +82,19 @@ export default function WaitlistPage() {
 
   return (
     <main className="min-h-screen bg-black/[0.96] antialiased bg-grid-white/[0.02]">
-      <div className="h-screen w-full flex md:items-center md:justify-center relative overflow-hidden">
+      <div className="h-screen w-full flex items-center justify-center relative overflow-hidden">
         <Spotlight
           className="-top-40 left-0 md:left-60 md:-top-20"
           fill="white"
         />
+        <FloatingDock
+          desktopClassName="fixed top-20"
+          mobileClassName="fixed bottom-10 right-5"
+          items={navigationLinks}
+        />
+        
 
-        <nav className="fixed top-0 w-full flex justify-center bg-slate-50">
-          <FloatingDock
-            desktopClassName="fixed top-20"
-            mobileClassName="fixed top-20"
-            items={navigationLinks}
-          />
-        </nav>
-
-        <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
+        <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pb-23 md:pt-0">
           <h1 className="text-4xl md:text-7xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400">
             Your all-in-one <br /> Productivity tool.
           </h1>
