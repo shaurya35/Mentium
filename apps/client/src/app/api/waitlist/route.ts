@@ -1,33 +1,46 @@
-// pages/api/waitlist.ts
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method === "POST") {
-    try {
-      const { email } = req.body;
+export async function GET() {
+  try {
+    const count = await prisma.waitlist.count();
+    return NextResponse.json({ count }, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching count:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
+  }
+}
 
-      const newEntry = await prisma.waitlist.create({
-        data: { email },
-      });
+export async function POST(req: NextRequest) {
+  try {
+    const { email } = await req.json();
+    
+    await prisma.waitlist.upsert({
+      where: { email },
+      create: { email },
+      update: {},
+    });
 
-      return res.status(200).json({
-        message: "Email stored successfully",
-        entry: newEntry,
-      });
-    } catch (error) {
-      console.error("Error storing email:", error);
-      return res.status(500).json({ error: "Internal Server Error" });
+    // Get fresh count
+    const count = await prisma.waitlist.count();
+    
+    return NextResponse.json({ count }, { status: 200 });
+  } catch (error: any) {
+    console.error("Error storing email:", error);
+    
+    if (error.code === "P2002") {
+      const count = await prisma.waitlist.count();
+      return NextResponse.json({ count }, { status: 200 });
     }
-  } else {
-    res.setHeader("Allow", ["POST"]);
-    return res
-      .status(405)
-      .json({ error: `Method ${req.method} Not Allowed` });
+    
+    return NextResponse.json(
+      { error: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }
