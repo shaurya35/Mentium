@@ -1,8 +1,8 @@
 "use client";
-import React, { useId, useMemo } from "react";
+import React, { useId } from "react";
 import { useEffect, useState } from "react";
 import Particles, { initParticlesEngine } from "@tsparticles/react";
-import type { Container, SingleOrMultiple } from "@tsparticles/engine";
+import type { Container } from "@tsparticles/engine";
 import { loadSlim } from "@tsparticles/slim";
 import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "framer-motion";
@@ -18,6 +18,7 @@ type ParticlesProps = {
   particleColor?: string;
   particleDensity?: number;
 };
+
 export const SparklesCore = (props: ParticlesProps) => {
   const {
     id,
@@ -68,7 +69,6 @@ export const SparklesCore = (props: ParticlesProps) => {
               enable: false,
               zIndex: 1,
             },
-
             fpsLimit: 120,
             interactivity: {
               events: {
@@ -80,7 +80,7 @@ export const SparklesCore = (props: ParticlesProps) => {
                   enable: false,
                   mode: "repulse",
                 },
-                resize: true as any,
+                resize: { enable: true },
               },
               modes: {
                 push: {
@@ -157,7 +157,7 @@ export const SparklesCore = (props: ParticlesProps) => {
                 close: true,
                 fill: true,
                 options: {},
-                type: {} as SingleOrMultiple<string> | undefined,
+                type: [] as string[],
               },
               groups: {},
               move: {

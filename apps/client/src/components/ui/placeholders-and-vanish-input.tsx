@@ -12,6 +12,14 @@ interface PlaceholdersAndVanishInputProps {
   disabled?: boolean;
 }
 
+// Define a Particle type for our canvas animation
+interface Particle {
+  x: number;
+  y: number;
+  r: number;
+  color: string;
+}
+
 export function PlaceholdersAndVanishInput({
   placeholders,
   onSubmit,
@@ -21,26 +29,28 @@ export function PlaceholdersAndVanishInput({
 }: PlaceholdersAndVanishInputProps) {
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
   const [animating, setAnimating] = useState(false);
-  
+
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const newDataRef = useRef<any[]>([]);
+  const newDataRef = useRef<Particle[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const startAnimation = () => {
+  // Memoize the animation starter
+  const startAnimation = useCallback(() => {
     intervalRef.current = setInterval(() => {
       setCurrentPlaceholder((prev) => (prev + 1) % placeholders.length);
     }, 3000);
-  };
+  }, [placeholders]);
 
-  const handleVisibilityChange = () => {
+  // Memoize the visibility change handler
+  const handleVisibilityChange = useCallback(() => {
     if (document.visibilityState !== "visible" && intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     } else if (document.visibilityState === "visible") {
       startAnimation();
     }
-  };
+  }, [startAnimation]);
 
   useEffect(() => {
     startAnimation();
@@ -49,7 +59,7 @@ export function PlaceholdersAndVanishInput({
       if (intervalRef.current) clearInterval(intervalRef.current);
       document.removeEventListener("visibilitychange", handleVisibilityChange);
     };
-  }, [placeholders]);
+  }, [startAnimation, handleVisibilityChange]);
 
   const draw = useCallback(() => {
     if (!inputRef.current || !canvasRef.current) return;
@@ -59,7 +69,7 @@ export function PlaceholdersAndVanishInput({
     canvasRef.current.width = 800;
     canvasRef.current.height = 800;
     ctx.clearRect(0, 0, 800, 800);
-    
+
     const computedStyles = getComputedStyle(inputRef.current);
     const fontSize = parseFloat(computedStyles.getPropertyValue("font-size"));
     ctx.font = `${fontSize * 2}px ${computedStyles.fontFamily}`;
@@ -68,12 +78,12 @@ export function PlaceholdersAndVanishInput({
 
     const imageData = ctx.getImageData(0, 0, 800, 800);
     const pixelData = imageData.data;
-    const newData: any[] = [];
+    const newData: { x: number; y: number; color: [number, number, number, number] }[] = [];
 
     for (let t = 0; t < 800; t++) {
-      let i = 4 * t * 800;
+      const i = 4 * t * 800;
       for (let n = 0; n < 800; n++) {
-        let e = i + 4 * n;
+        const e = i + 4 * n;
         if (pixelData[e] !== 0 && pixelData[e + 1] !== 0 && pixelData[e + 2] !== 0) {
           newData.push({
             x: n,
@@ -99,7 +109,7 @@ export function PlaceholdersAndVanishInput({
   const animate = (start: number) => {
     const animateFrame = (pos: number = 0) => {
       requestAnimationFrame(() => {
-        const newArr = [];
+        const newArr: Particle[] = [];
         for (let i = 0; i < newDataRef.current.length; i++) {
           const current = newDataRef.current[i];
           if (current.x < pos) {
@@ -113,7 +123,7 @@ export function PlaceholdersAndVanishInput({
           }
         }
         newDataRef.current = newArr;
-        
+
         const ctx = canvasRef.current?.getContext("2d");
         if (ctx) {
           ctx.clearRect(pos, 0, 800, 800);
@@ -127,7 +137,7 @@ export function PlaceholdersAndVanishInput({
             }
           });
         }
-        
+
         if (newDataRef.current.length > 0) {
           animateFrame(pos - 8);
         } else {

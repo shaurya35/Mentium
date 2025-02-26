@@ -30,10 +30,11 @@ export async function POST(req: NextRequest) {
     const count = await prisma.waitlist.count();
     
     return NextResponse.json({ count }, { status: 200 });
-  } catch (error: any) {
+  }
+  catch (error) {
     console.error("Error storing email:", error);
     
-    if (error.code === "P2002") {
+    if (error instanceof Error && 'code' in error && error.code === "P2002") {
       const count = await prisma.waitlist.count();
       return NextResponse.json({ count }, { status: 200 });
     }
