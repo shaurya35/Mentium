@@ -23,5 +23,5 @@ app.use(errorHandler);
 import { PORT } from "./configs/env.config";
 
 app.listen(PORT, () => {
-  console.log(`Server is running http://localhost:${port}`);
+  console.log(`Server is running http://localhost:${PORT}`);
 });
