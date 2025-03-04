@@ -1,19 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import prisma from "../common/utils/db"; 
+import prisma from "../common/utils/db";
 import Category from "../domains/category.domain";
 
 class CategoryController {
-
   static async getAll(req: Request, res: Response, next: NextFunction) {
     try {
       const categoriesData = await prisma.category.findMany();
-      const categories = categoriesData.map(data => 
-        new Category(
-          data.id,
-          data.name,
-          data.createdAt,
-          data.updatedAt
-        )
+      const categories = categoriesData.map(
+        (data) =>
+          new Category(data.id, data.name, data.createdAt, data.updatedAt)
       );
       res.json(categories);
     } catch (error) {
@@ -23,7 +18,7 @@ class CategoryController {
 
   static async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const id: number = req.body.id;
+      const id: number = parseInt(req.body.id, 10);
       const data = await prisma.category.findUnique({ where: { id } });
       if (!data) {
         return res.status(404).json({ message: "Category not found" });
@@ -46,7 +41,7 @@ class CategoryController {
 
       const newCategory = Category.createNew(name);
       const createdData = await prisma.category.create({
-        data: { name: newCategory.name }
+        data: { name: newCategory.name },
       });
       const category = new Category(
         createdData.id,
@@ -59,28 +54,30 @@ class CategoryController {
       next(error);
     }
   }
-  
+
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
       const { id, name } = req.body;
-      const data = await prisma.category.findUnique({ where: { id } });
+      const parsedId = parseInt(id, 10);
+      console.log(parsedId)
+      const data = await prisma.category.findUnique({ where: { id: parsedId } });
       if (!data) {
         return res.status(404).json({ message: "Category not found" });
       }
-    
+
       const category = new Category(
         data.id,
         data.name,
         data.createdAt,
         data.updatedAt
       );
-      
+
       if (name !== undefined) {
         category.updateName(name);
       }
       const updatedData = await prisma.category.update({
-        where: { id },
-        data: { name: category.name }
+        where: { id: parsedId },
+        data: { name: category.name },
       });
       const updatedCategory = new Category(
         updatedData.id,
@@ -96,9 +93,9 @@ class CategoryController {
 
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
-      const id: number = req.body.id;
+      const id: number = parseInt(req.body.id, 10);
       const deletedCategory = await prisma.category.delete({
-        where: { id }
+        where: { id },
       });
       res.json(deletedCategory);
     } catch (error) {

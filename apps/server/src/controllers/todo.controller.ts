@@ -5,7 +5,7 @@ import Todo from "../domains/todo.domain";
 class TodoController {
   static async getById(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.body.id;
+      const id = parseInt(req.body.id);
       const todoData = await prisma.todo.findUnique({
         where: { id },
         include: { subtodos: true },
@@ -35,7 +35,7 @@ class TodoController {
 
   static async getByCategory(req: Request, res: Response, next: NextFunction) {
     try {
-      const categoryId = req.body.categoryId;
+      const categoryId = parseInt(req.body.categoryId);
       const todosData = await prisma.todo.findMany({
         where: { categoryId, parentId: null },
         include: { subtodos: true },
@@ -106,7 +106,7 @@ class TodoController {
 
   static async update(req: Request, res: Response, next: NextFunction) {
     try {
-        const id = req.body.id;
+        const id = parseInt(req.body.id);
         const todoData = await prisma.todo.findUnique({
             where: { id },
         })
@@ -185,7 +185,7 @@ class TodoController {
 
   static async delete(req: Request, res: Response, next: NextFunction) {
     try {
-        const id = req.body.id;
+        const id = parseInt(req.body.id);
         const deletedTodo = await prisma.todo.delete({
             where: { id },
         })

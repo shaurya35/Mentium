@@ -3,7 +3,7 @@ import express from "express";
 const app = express();
 app.use(express.json());
 
-app.use("/", (req, res) => {
+app.use("/health", (req, res) => {
   res.json({
     message: "Health Check",
   });
@@ -16,6 +16,10 @@ import requestLogger from "./middlewares/request.Logger";
 
 app.use("/api/v1/categories", categoryRoutes);
 app.use("/api/v1/todos", todoRoutes);
+
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Route not found" });
+});
 
 app.use(requestLogger);
 app.use(errorHandler);
