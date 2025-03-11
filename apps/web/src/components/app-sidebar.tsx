@@ -3,21 +3,21 @@
 import * as React from "react"
 import {
   AudioWaveform,
-  BookOpen,
-  Bot,
+  // BookOpen,
+  // Bot,
   Command,
   Frame,
   GalleryVerticalEnd,
   Map,
   PieChart,
-  Settings2,
+  // Settings2,
   CircleCheck,
-  SquareTerminal,
+  // SquareTerminal,
   Settings,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
+// import { NavProjects } from "@/components/nav-projects"
 import { NavUser } from "@/components/nav-user"
 import { TeamSwitcher } from "@/components/team-switcher"
 import {
