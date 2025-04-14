@@ -9,8 +9,8 @@ app.use("/health", (req, res) => {
   });
 });
 
-import categoryRoutes from "./routes/category.routes";
-import todoRoutes from "./routes/todo.routes";
+import categoryRoutes from "./routes/categoryRoutes";
+import todoRoutes from "./routes/todoRoutes";
 import errorHandler from "./middlewares/error.Handler";
 import requestLogger from "./middlewares/request.Logger";
 

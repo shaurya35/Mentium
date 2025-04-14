@@ -1,5 +1,5 @@
 {
-  "name": "ascend-student-productivity",
+  "name": "mentium",
   "private": true,
   "scripts": {
     "build": "turbo run build",

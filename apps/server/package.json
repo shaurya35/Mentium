@@ -8,16 +8,22 @@
     "dev": "pnpm run build && pnpm start"
   },
   "dependencies": {
-    "@prisma/client": "6.4.1",
     "@repo/typescript-config": "workspace:*",
     "@types/express": "^5.0.0",
-    "express": "^4.21.2"
+    "bcrypt": "^5.1.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.10.0"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "prisma": "6.4.1"
+    "@prisma/client": "6.5.0",
+    "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/nodemailer": "^6.4.17",
+    "prisma": "6.5.0"
   }
 }

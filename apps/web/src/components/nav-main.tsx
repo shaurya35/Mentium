@@ -1,7 +1,8 @@
 "use client"
 
 import { ChevronRight, type LucideIcon } from "lucide-react"
-
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,47 +24,66 @@ export function NavMain({
 }: {
   items: {
     title: string
-    url: string
+    view: string
     icon?: LucideIcon
-    isActive?: boolean
     items?: {
       title: string
-      url: string
+      subview: string
     }[]
   }[]
 }) {
+  const searchParams = useSearchParams()
+  const currentView = searchParams.get("view")
+  const currentSub = searchParams.get("subview")
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
           <Collapsible
-            key={item.title}
+            key={item.view}
             asChild
-            defaultOpen={item.isActive}
+            defaultOpen={currentView === item.view}
             className="group/collapsible"
           >
             <SidebarMenuItem>
               <CollapsibleTrigger asChild>
-                <SidebarMenuButton tooltip={item.title}>
-                  {item.icon && <item.icon />}
-                  <span>{item.title}</span>
-                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                <SidebarMenuButton
+                  tooltip={item.title}
+                  asChild
+                  isActive={currentView === item.view && !currentSub}
+                >
+                  <Link href={`/dashboard?view=${item.view}`}>
+                    {item.icon && <item.icon className="h-4 w-4" />}
+                    <span>{item.title}</span>
+                    {item.items && (
+                      <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                    )}
+                  </Link>
                 </SidebarMenuButton>
               </CollapsibleTrigger>
-              <CollapsibleContent>
-                <SidebarMenuSub>
-                  {item.items?.map((subItem) => (
-                    <SidebarMenuSubItem key={subItem.title}>
-                      <SidebarMenuSubButton asChild>
-                        <a href={subItem.url}>
-                          <span>{subItem.title}</span>
-                        </a>
-                      </SidebarMenuSubButton>
-                    </SidebarMenuSubItem>
-                  ))}
-                </SidebarMenuSub>
-              </CollapsibleContent>
+              
+              {item.items && (
+                <CollapsibleContent>
+                  <SidebarMenuSub>
+                    {item.items.map((subItem) => (
+                      <SidebarMenuSubItem key={subItem.subview}>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={currentSub === subItem.subview}
+                        >
+                          <Link
+                            href={`/dashboard?view=${item.view}&subview=${subItem.subview}`}
+                          >
+                            <span>{subItem.title}</span>
+                          </Link>
+                        </SidebarMenuSubButton>
+                      </SidebarMenuSubItem>
+                    ))}
+                  </SidebarMenuSub>
+                </CollapsibleContent>
+              )}
             </SidebarMenuItem>
           </Collapsible>
         ))}
